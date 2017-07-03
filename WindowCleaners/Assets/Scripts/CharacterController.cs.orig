@@ -73,11 +73,22 @@ namespace WindowCleaner
 			animator.SetBool ("IsCleaning", isCleaning);
 			animator.SetBool ("IsFalling", !isGrounded && rigidBody.velocity.y < -8);
 
-
+<<<<<<< HEAD
+			// Check if offscreen
+			if (!GetComponent<SpriteRenderer> ().isVisible) {
+				// Teleport to above gondola
+				Vector3 gondolaBtmPos = Gondola.transform.GetChild (1).transform.position;
+				gondolaBtmPos.y = 6;
+				transform.position = gondolaBtmPos;
+				rigidBody.velocity = Vector2.zero;
+				GetComponent<Rigidbody2D> ().velocity = Vector2.zero;
+			}
+=======
+>>>>>>> 2870455a9ad8647d63a37abde1ca2febf5e0bd0e
 				
 			// Jump
 
-			if (!isDisabled)
+			if (!isCleaning)
 			{
 				float lr = Input.GetAxis (leftStickHorizontalAxis);
 				int move = Convert.ToInt32 (Input.GetKey (KeyCode.RightArrow)) - Convert.ToInt32 (Input.GetKey (KeyCode.LeftArrow));	
@@ -96,7 +107,6 @@ namespace WindowCleaner
 
 			if (jump && isGrounded && !isCleaning)
 			{
-				animator.SetTrigger ("Jump");
 				rigidBody.velocity = new Vector2 (rigidBody.velocity.x, rigidBody.velocity.y + jumpHeight * (jump ? 1 : 0));
 			}
 
@@ -139,7 +149,7 @@ namespace WindowCleaner
 				if (clean && isGrounded && !isCleaning )
 				{
 					Window window = other.GetComponent<Window> ();
-					if (window != null && window.cleanedBy != GetComponent<CharacterController>())
+					if (window != null)
 					{
 						isCleaning = true;
 

@@ -27,6 +27,8 @@ namespace WindowCleaner
 		bool isGrounded;
 		bool isStomped;
 
+		bool shouldRespawnNow;
+
 		public bool isDisabled
 		{
 			get
@@ -71,15 +73,6 @@ namespace WindowCleaner
 			animator.SetBool ("IsCleaning", isCleaning);
 			animator.SetBool ("IsFalling", !isGrounded && rigidBody.velocity.y < -8);
 
-			// Check if offscreen
-			if (!GetComponent<SpriteRenderer> ().isVisible) {
-				// Teleport to above gondola
-				Vector3 gondolaBtmPos = Gondola.transform.GetChild (1).transform.position;
-				gondolaBtmPos.y = 6;
-				transform.position = gondolaBtmPos;
-				rigidBody.velocity = Vector2.zero;
-				GetComponent<Rigidbody2D> ().velocity = Vector2.zero;
-			}
 				
 			// Jump
 
@@ -110,6 +103,15 @@ namespace WindowCleaner
 			if (!isStomped)
 			{
 				GetComponent<SpriteRenderer> ().color = Color.white;
+			}
+
+			if (shouldRespawnNow) {
+				GetComponent<Rigidbody2D> ().velocity = Vector2.zero;
+				Vector3 gondolaBtmPos = Gondola.transform.GetChild (1).transform.position;
+				gondolaBtmPos.y = 6;
+				transform.position = gondolaBtmPos;
+
+				shouldRespawnNow = false;
 			}
 
 		}
@@ -163,6 +165,7 @@ namespace WindowCleaner
 			timer.Interval = stompDuration * 1000;
 			timer.Elapsed += (sender, e) =>
 			{
+				timer.Stop ();
 				isStomped = false;
 			};
 			timer.Start ();
@@ -176,6 +179,19 @@ namespace WindowCleaner
 			}
 		}
 
+
+		void OnBecameInvisible(){
+			// Teleport to above gondola
+			Timer timer = new Timer ();
+			timer.Interval = respawnTimer * 1000;
+			timer.Elapsed += (sender, e) =>
+			{
+				timer.Stop ();
+				shouldRespawnNow = true;
+			};
+			timer.Start ();
+		
+		}
 	
 
 	}

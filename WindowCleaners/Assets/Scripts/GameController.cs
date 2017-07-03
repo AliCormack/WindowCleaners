@@ -21,6 +21,12 @@ namespace WindowCleaner
 		List<Window> windows;
 		List<CharacterController> characters;
 
+		bool gameStarted = false;
+
+		public float TimeLimit;
+		private float timeLeft;
+
+
 		void Start () 
 		{
 			characters = new List<CharacterController> ();
@@ -44,11 +50,16 @@ namespace WindowCleaner
 
 			windows = Object.FindObjectsOfType<Window> ().ToList ();
 
+			timeLeft = TimeLimit;
+			gameStarted = true;
+
 		}
 		
 		// Update is called once per frame
 		void Update () 
 		{
+			timeLeft -= Time.deltaTime;
+
 
 			foreach (CharacterController controller in characters)
 			{

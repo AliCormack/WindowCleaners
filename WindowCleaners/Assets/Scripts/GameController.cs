@@ -36,6 +36,7 @@ namespace WindowCleaner
 		public Text TimerText; 
 		public List<Text> ScoreText;
 		public Text GameEndText;
+		public GameObject StartPanel;
 
 		void Start () 
 		{
@@ -45,8 +46,8 @@ namespace WindowCleaner
 			for (int i = 0; i < numPlayers; i++)
 			{
 				// Instantiate Player
-				GameObject playerGameObject = GameObject.Instantiate(PlayerPrefab, new Vector3(1, 0, 0), Quaternion.identity);
-				GameObject gondolaGameObject = GameObject.Instantiate(GondolaPrefab, new Vector3(1, 5, 0), Quaternion.identity);
+				GameObject playerGameObject = GameObject.Instantiate(PlayerPrefab, new Vector3(-1, 0, 0) + i*new Vector3(4,0,0), Quaternion.identity);
+				GameObject gondolaGameObject = GameObject.Instantiate(GondolaPrefab, new Vector3(-1, 5, 0)+ i*new Vector3(4,0,0), Quaternion.identity);
 
 				// Need to add Rigidbody2D at runtime as adding it at compile time causes a crash with unity
 				Rigidbody2D rb2d = playerGameObject.AddComponent<Rigidbody2D> ();
@@ -67,14 +68,19 @@ namespace WindowCleaner
 			windows = Object.FindObjectsOfType<Window> ().ToList ();
 
 			timeLeft = TimeLimit;
-			currentState = GameState.Playing;
 
 		}
 		
 		// Update is called once per frame
 		void Update () 
 		{
-			if (currentState == GameState.Playing) {
+			if (currentState == GameState.Starting) {
+				if (Input.anyKeyDown) {
+					StartPanel.SetActive (false);
+					currentState = GameState.Playing;
+				}
+			}
+			else if (currentState == GameState.Playing) {
 				// Timer update
 				timeLeft -= Time.deltaTime;
 				TimerText.text = timeLeft.ToString ("F1");

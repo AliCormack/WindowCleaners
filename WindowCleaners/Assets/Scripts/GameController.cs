@@ -25,7 +25,7 @@ namespace WindowCleaner
 		{
 			characters = new List<CharacterController> ();
 
-			for (int i = 0; i <= numPlayers; i++)
+			for (int i = 1; i <= numPlayers+1; i++)
 			{
 				// Instantiate Player
 				GameObject playerGameObject = GameObject.Instantiate(PlayerPrefab, new Vector3(1, 0, 0) * i * 2, Quaternion.identity);
@@ -39,6 +39,7 @@ namespace WindowCleaner
 
 				CharacterController player = playerGameObject.GetComponent<CharacterController> ();
 				player.color = colors [i];
+				player.SetPlayerNumber (i);
 				characters.Add (player);
 			}
 
@@ -57,7 +58,10 @@ namespace WindowCleaner
 
 			foreach (Window window in windows)
 			{
-				window.cleanedBy.cleanedWindows += 1;
+				if (window.cleanedBy != null)
+				{
+					window.cleanedBy.cleanedWindows += 1;
+				}
 			}
 		}
 	}

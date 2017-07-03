@@ -20,6 +20,19 @@ namespace WindowCleaner
 
 		public int cleanedWindows = 0;
 
+		int playerNumber;
+		string horizontalAxis = "joystick {0} Horizontal";
+		string jumpButton = "joystick {0} button 1";
+		string cleanButton = "joystick {0} button 2";
+
+		public void SetPlayerNumber(int playerNumber)
+		{
+			this.playerNumber = playerNumber;
+			horizontalAxis = string.Format (horizontalAxis, playerNumber);
+			jumpButton = string.Format (jumpButton, playerNumber);
+			cleanButton = string.Format (cleanButton, playerNumber);
+		}
+
 		void Start () 
 		{
 			rigidBody = GetComponent<Rigidbody2D> ();
@@ -29,15 +42,19 @@ namespace WindowCleaner
 		void FixedUpdate () 
 		{
 			// TODO change to floating point controller input
+
+			float lr = Input.GetAxis (horizontalAxis);
+
+
 			int move = Convert.ToInt32(Input.GetKey (KeyCode.RightArrow)) - Convert.ToInt32(Input.GetKey (KeyCode.LeftArrow));	
 
-			rigidBody.velocity = new Vector2 (move * speed, rigidBody.velocity.y);
+			rigidBody.velocity = new Vector2 (lr * speed, rigidBody.velocity.y);
 
-			int jump = Convert.ToInt32(Input.GetKeyDown (KeyCode.Space));
+			bool jump = Input.GetKeyDown (jumpButton);
 
-			if (jump > 0 && IsGrounded ())
+			if (jump && IsGrounded ())
 			{
-				rigidBody.velocity = new Vector2 (rigidBody.velocity.x, rigidBody.velocity.y + jumpHeight * jump);
+				rigidBody.velocity = new Vector2 (rigidBody.velocity.x, rigidBody.velocity.y + jumpHeight * (jump ? 1 : 0));
 			}
 				
 
@@ -51,9 +68,9 @@ namespace WindowCleaner
 
 		void OnTriggerStay2D(Collider2D other)
 		{
-			int clean = Convert.ToInt32(Input.GetKeyDown (KeyCode.S));
+			bool clean = Input.GetKeyDown (cleanButton);
 
-			if (clean > 0 && IsGrounded ())
+			if (clean && IsGrounded ())
 			{
 				Window window = other.GetComponent<Window> ();
 				if (window != null)

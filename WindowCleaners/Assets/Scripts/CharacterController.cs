@@ -22,6 +22,7 @@ namespace WindowCleaner
 		Animator animator;
 
 		public GameObject Gondola;
+		public bool GameEnded = false;
 
 		bool isCleaning;
 		bool isGrounded;
@@ -29,11 +30,9 @@ namespace WindowCleaner
 
 		bool shouldRespawnNow;
 
-		public bool isDisabled
-		{
-			get
-			{
-				return isCleaning || isStomped;
+		public bool isDisabled {
+			get {
+				return isCleaning || isStomped || GameEnded;
 			}
 		}
 

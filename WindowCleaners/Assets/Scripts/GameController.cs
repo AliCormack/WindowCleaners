@@ -115,7 +115,7 @@ namespace WindowCleaner
 				}
 			} else if (currentState == GameState.Ending) {
 				foreach (var controller in characters) {
-					controller.enabled = false;
+					controller.GameEnded = true;
 				}	
 				//Find out what the top score is and which players have it
 				int topScore = characters.Max (character => character.cleanedWindows);

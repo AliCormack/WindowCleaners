@@ -12,7 +12,7 @@ namespace WindowCleaner
 		public float speed = 10f;
 		public float jumpHeight = 10f;
 		public float cleanTime = 1f;
-		public float stompedDuration = 1f;
+		public float stompDuration = 1f;
 		public float respawnTimer = 4f;
 
 		public Color color;

@@ -153,14 +153,15 @@ namespace WindowCleaner
 					if (window != null)
 					{
 						isCleaning = true;
+
 						Timer timer = new Timer ();
-					timer.Interval = cleanTime * 1000;
-					timer.Elapsed += (sender, e) =>
-					{
-						timer.Stop();
-						isCleaning = false;
-					};
-					timer.Start ();
+						timer.Interval = cleanTime * 1000;
+						timer.Elapsed += (sender, e) =>
+						{
+							timer.Stop();
+							isCleaning = false;
+						};
+						timer.Start ();
 						window.SetCleaned (this);
 					}
 

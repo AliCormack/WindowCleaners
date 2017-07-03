@@ -57,8 +57,12 @@ namespace WindowCleaner
 
 		void FixedUpdate () 
 		{
-			animator.SetBool ("IsCleaning", isCleaning);
+
 			isGrounded = IsGrounded ();
+
+			animator.SetBool ("IsCleaning", isCleaning);
+			bool isFalling = !isGrounded && rigidBody.velocity.y < -7;
+			animator.SetBool ("IsFalling", isFalling);
 
 			if (!GetComponent<SpriteRenderer> ().isVisible) {
 				Vector3 gondolaBtmPos = Gondola.transform.GetChild (1).transform.position;
@@ -77,35 +81,35 @@ namespace WindowCleaner
 			else{
 				// Jump
 
-			if (!isCleaning)
-			{
-				float lr = Input.GetAxis (leftStickHorizontalAxis);
-				int move = Convert.ToInt32 (Input.GetKey (KeyCode.RightArrow)) - Convert.ToInt32 (Input.GetKey (KeyCode.LeftArrow));	
-				rigidBody.velocity = new Vector2 (lr * speed, rigidBody.velocity.y);
+				if (!isCleaning)
+				{
+					float lr = Input.GetAxis (leftStickHorizontalAxis);
+					int move = Convert.ToInt32 (Input.GetKey (KeyCode.RightArrow)) - Convert.ToInt32 (Input.GetKey (KeyCode.LeftArrow));	
+					rigidBody.velocity = new Vector2 (lr * speed, rigidBody.velocity.y);
 
-				animator.SetBool ("IsRunning", Math.Abs (lr) > 0);
+					animator.SetBool ("IsRunning", Math.Abs (lr) > 0);
 
-				Vector3 iScale = transform.localScale;
-				float xScale = Math.Abs (iScale.x);
-				transform.localScale = new Vector3 (lr >= 0 ? xScale : -xScale, iScale.y, iScale.z);
-			}
+					Vector3 iScale = transform.localScale;
+					float xScale = Math.Abs (iScale.x);
+					transform.localScale = new Vector3 (lr >= 0 ? xScale : -xScale, iScale.y, iScale.z);
+				}
 
-				// Jump
+					// Jump
 
-				bool jump = Input.GetKeyDown (jumpButton);
+					bool jump = Input.GetKeyDown (jumpButton);
 
-			if (jump && isGrounded && !isCleaning)
+				if (jump && isGrounded && !isCleaning)
+				{
 					rigidBody.velocity = new Vector2 (rigidBody.velocity.x, rigidBody.velocity.y + jumpHeight * (jump ? 1 : 0));
+				}
 			
 			}
-
-
 
 		}
 
 		bool IsGrounded()
 		{
-			RaycastHit2D raycast = Physics2D.Raycast (transform.position, Vector2.down, myCollider.bounds.extents.y+ 0.03f);
+			RaycastHit2D raycast = Physics2D.Raycast (transform.position, Vector2.down, myCollider.bounds.extents.y+ 0.05f);
 			if (raycast.collider != null && raycast.collider.tag == "Standable") {
 				transform.parent = raycast.collider.transform;
 			

@@ -21,8 +21,9 @@ namespace WindowCleaner
 		static Color player2Color = Color.red;
 		static Color[] colors = new Color[]{player1Color, player2Color};
 
-		public int numPlayers = 2;
+		public int numPlayers = 1;
 		public GameObject PlayerPrefab;
+		public GameObject GondolaPrefab;
 
 		public int PointsPerWindow = 50;
 
@@ -41,10 +42,11 @@ namespace WindowCleaner
 			currentState = GameState.Starting;
 			characters = new List<CharacterController> ();
 
-			for (int i = 0; i <= numPlayers; i++)
+			for (int i = 0; i < numPlayers; i++)
 			{
 				// Instantiate Player
 				GameObject playerGameObject = GameObject.Instantiate(PlayerPrefab, new Vector3(1, 0, 0) * i * 2, Quaternion.identity);
+				GameObject gondolaGameObject = GameObject.Instantiate(GondolaPrefab, new Vector3(1, 0, 0) * i * 2, Quaternion.identity);
 
 				// Need to add Rigidbody2D at runtime as adding it at compile time causes a crash with unity
 				Rigidbody2D rb2d = playerGameObject.AddComponent<Rigidbody2D> ();
@@ -57,6 +59,9 @@ namespace WindowCleaner
 				player.color = colors [i];
 				player.SetPlayerNumber (i+1);
 				characters.Add (player);
+
+				GondolaController gondola = gondolaGameObject.GetComponent<GondolaController> ();
+				gondola.SetPlayerNumber (i+1);
 			}
 
 			windows = Object.FindObjectsOfType<Window> ().ToList ();

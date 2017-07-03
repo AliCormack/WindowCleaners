@@ -17,8 +17,8 @@ namespace WindowCleaner
 		}
 		private GameState currentState;
 
-		static Color player1Color = Color.blue;
-		static Color player2Color = Color.red;
+		static Color player1Color = new Color (0.6f, 0.6f, 1);
+		static Color player2Color = new Color (1f, 0.6f, 0.6f);
 		static Color[] colors = new Color[]{player1Color, player2Color};
 
 		public int numPlayers = 1;

@@ -46,8 +46,8 @@ namespace WindowCleaner
 			for (int i = 0; i < numPlayers; i++)
 			{
 				// Instantiate Player
-				GameObject playerGameObject = GameObject.Instantiate(PlayerPrefab, new Vector3(1, 0, 0), Quaternion.identity);
-				GameObject gondolaGameObject = GameObject.Instantiate(GondolaPrefab, new Vector3(1, 5, 0), Quaternion.identity);
+				GameObject playerGameObject = GameObject.Instantiate(PlayerPrefab, new Vector3(-1, 0, 0) + i*new Vector3(4,0,0), Quaternion.identity);
+				GameObject gondolaGameObject = GameObject.Instantiate(GondolaPrefab, new Vector3(-1, 5, 0)+ i*new Vector3(4,0,0), Quaternion.identity);
 
 				// Need to add Rigidbody2D at runtime as adding it at compile time causes a crash with unity
 				Rigidbody2D rb2d = playerGameObject.AddComponent<Rigidbody2D> ();
@@ -76,7 +76,6 @@ namespace WindowCleaner
 		{
 			if (currentState == GameState.Starting) {
 				if (Input.anyKeyDown) {
-					Debug.Log ("Starting");
 					StartPanel.SetActive (false);
 					currentState = GameState.Playing;
 				}

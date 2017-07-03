@@ -10,6 +10,7 @@ namespace WindowCleaner
 
 		public float speed = 10f;
 		public float jumpHeight = 10f;
+		public float stompDuration = 1f;
 
 		public Color color;
 
@@ -19,6 +20,9 @@ namespace WindowCleaner
 
 		bool cleaning;
 		bool isGrounded;
+		bool isStomped;
+
+		float stompTimer;
 
 		public int cleanedWindows = 0;
 
@@ -52,23 +56,33 @@ namespace WindowCleaner
 
 			isGrounded = IsGrounded ();
 
-			// Jump
+			if (isStomped) {
+				stompTimer -= Time.deltaTime;
+				if (stompTimer <= 0) {
+					isStomped = false;
+					GetComponent<SpriteRenderer> ().color = Color.white;
+				}
+			}
+			else{
+				// Jump
 
-			float lr = Input.GetAxis (leftStickHorizontalAxis);
-			int move = Convert.ToInt32(Input.GetKey (KeyCode.RightArrow)) - Convert.ToInt32(Input.GetKey (KeyCode.LeftArrow));	
-			rigidBody.velocity = new Vector2 (lr * speed, rigidBody.velocity.y);
+				float lr = Input.GetAxis (leftStickHorizontalAxis);
+				int move = Convert.ToInt32 (Input.GetKey (KeyCode.RightArrow)) - Convert.ToInt32 (Input.GetKey (KeyCode.LeftArrow));	
+				rigidBody.velocity = new Vector2 (lr * speed, rigidBody.velocity.y);
 
-			animator.SetBool ("IsRunning", Math.Abs (lr) > 0);
+				animator.SetBool ("IsRunning", Math.Abs (lr) > 0);
 //			transform.localScale = new Vector3 (lr >= 0 ? initialScale.x : -initialScale.x, initialScale.y, initialScale.z);
 
-			// Jump
+				// Jump
 
-			bool jump = Input.GetKeyDown (jumpButton);
+				bool jump = Input.GetKeyDown (jumpButton);
 
-			if (jump && isGrounded)
-			{
-				rigidBody.velocity = new Vector2 (rigidBody.velocity.x, rigidBody.velocity.y + jumpHeight * (jump ? 1 : 0));
-			}			
+				if (jump && isGrounded) {
+					rigidBody.velocity = new Vector2 (rigidBody.velocity.x, rigidBody.velocity.y + jumpHeight * (jump ? 1 : 0));
+				}	
+			}
+
+
 
 			// 
 
@@ -98,6 +112,21 @@ namespace WindowCleaner
 					window.SetCleaned (this);
 				}
 
+			}
+		}
+
+		private void Stomped(){
+			isStomped = true;
+			stompTimer = stompDuration;
+			GetComponent<SpriteRenderer> ().color = Color.red;
+		}
+
+		void OnTriggerEnter2D(Collider2D other){
+			if (other.transform.tag == "Player") {
+				if (other.transform.GetComponent<Rigidbody2D> ().velocity.y < 0) {
+					Stomped ();
+				}
+			
 			}
 		}
 

@@ -2,43 +2,54 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GondolaController : MonoBehaviour {
+namespace WindowCleaner
+{
 
-	public GameObject GondolaTop;
-	public GameObject GondolaBottom;
-	public LineRenderer leftCable;
-	public LineRenderer rightCable;
+	public class GondolaController : MonoBehaviour {
 
-	public float udSpeed = 0.1f;
-	public float lrSpeed = 0.1f;
+		public GameObject GondolaTop;
+		public GameObject GondolaBottom;
+		public LineRenderer leftCable;
+		public LineRenderer rightCable;
 
-	string rightStickHorizontalAxis = "joystick {0} Right Horizontal";
-	string rightStickVerticalAxis = "joystick {0} Right Vertical";
+		public CharacterController characterController;
 
-	public void SetPlayerNumber(int playerNumber)
-	{
-		rightStickHorizontalAxis = string.Format (rightStickHorizontalAxis, playerNumber);
-		rightStickVerticalAxis = string.Format (rightStickVerticalAxis, playerNumber);
-	}
+		public float udSpeed = 0.1f;
+		public float lrSpeed = 0.1f;
 
-	void Update () 
-	{
-		float lr = Input.GetAxis (rightStickHorizontalAxis);
-		float ud = Input.GetAxis (rightStickVerticalAxis);
+		string rightStickHorizontalAxis = "joystick {0} Right Horizontal";
+		string rightStickVerticalAxis = "joystick {0} Right Vertical";
 
-		GondolaBottom.transform.Translate(lr * lrSpeed, ud * udSpeed, 0);
-		GondolaTop.transform.Translate (lr * lrSpeed, 0, 0);
+		public void SetPlayerNumber(int playerNumber)
+		{
+			rightStickHorizontalAxis = string.Format (rightStickHorizontalAxis, playerNumber);
+			rightStickVerticalAxis = string.Format (rightStickVerticalAxis, playerNumber);
+		}
 
-		Vector3 topPos = GondolaTop.transform.position;
-		Vector3 btmPos = GondolaBottom.transform.position;
+		void Update () 
+		{
+			if (!characterController.isDisabled)
+			{
+				float lr = Input.GetAxis (rightStickHorizontalAxis);
+				float ud = Input.GetAxis (rightStickVerticalAxis);
 
-		leftCable.SetPosition(0, new Vector3(topPos.x-1, topPos.y, topPos.z)); 
-		leftCable.SetPosition(1, new Vector3(btmPos.x-1, btmPos.y, btmPos.z)); 
+				GondolaBottom.transform.Translate (lr * lrSpeed, ud * udSpeed, 0);
+				GondolaTop.transform.Translate (lr * lrSpeed, 0, 0);
 
-		rightCable.SetPosition(0, new Vector3(topPos.x+1, topPos.y, topPos.z)); 
-		rightCable.SetPosition(1, new Vector3(btmPos.x+1, btmPos.y, btmPos.z)); 
-	
-	}
+				Vector3 topPos = GondolaTop.transform.position;
+				Vector3 btmPos = GondolaBottom.transform.position;
 
+				leftCable.SetPosition (0, new Vector3 (topPos.x - 1, topPos.y, topPos.z)); 
+				leftCable.SetPosition (1, new Vector3 (btmPos.x - 1, btmPos.y, btmPos.z)); 
+
+				rightCable.SetPosition (0, new Vector3 (topPos.x + 1, topPos.y, topPos.z)); 
+				rightCable.SetPosition (1, new Vector3 (btmPos.x + 1, btmPos.y, btmPos.z)); 
+			}
 		
+		}
+
+			
+	}
+
+
 }

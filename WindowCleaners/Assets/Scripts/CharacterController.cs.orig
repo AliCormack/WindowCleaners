@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using System.Timers;
 
 namespace WindowCleaner
 {
@@ -11,15 +10,18 @@ namespace WindowCleaner
 
 		public float speed = 10f;
 		public float jumpHeight = 10f;
-		public float cleanTime = 1f;
 
 		public Color color;
 
 		Rigidbody2D rigidBody;
-		Collider2D myCollider;
+<<<<<<< HEAD
+		Collider2D collider;
 		Animator animator;
+=======
+		Collider2D myCollider;
+>>>>>>> dc6cbfd00cc14d2ce332df860a52f5b19ea15db1
 
-		bool isCleaning;
+		bool cleaning;
 		bool isGrounded;
 
 		public int cleanedWindows = 0;
@@ -45,38 +47,38 @@ namespace WindowCleaner
 			initialScale = transform.localScale;
 
 			rigidBody = GetComponent<Rigidbody2D> ();
-			myCollider = GetComponent<Collider2D> ();
+<<<<<<< HEAD
+			collider = GetComponent<Collider2D> ();
 			animator = GetComponent<Animator> ();
+=======
+			myCollider = GetComponent<Collider2D> ();
+>>>>>>> dc6cbfd00cc14d2ce332df860a52f5b19ea15db1
 		}
 
 		void FixedUpdate () 
 		{
-			animator.SetBool ("IsCleaning", isCleaning);
+
 			isGrounded = IsGrounded ();
 
 			// Jump
 
-			if (!isCleaning)
-			{
-				float lr = Input.GetAxis (leftStickHorizontalAxis);
-				int move = Convert.ToInt32 (Input.GetKey (KeyCode.RightArrow)) - Convert.ToInt32 (Input.GetKey (KeyCode.LeftArrow));	
-				rigidBody.velocity = new Vector2 (lr * speed, rigidBody.velocity.y);
+			float lr = Input.GetAxis (leftStickHorizontalAxis);
+			int move = Convert.ToInt32(Input.GetKey (KeyCode.RightArrow)) - Convert.ToInt32(Input.GetKey (KeyCode.LeftArrow));	
+			rigidBody.velocity = new Vector2 (lr * speed, rigidBody.velocity.y);
 
-				animator.SetBool ("IsRunning", Math.Abs (lr) > 0);
-
-				Vector3 iScale = transform.localScale;
-				float xScale = Math.Abs (iScale.x);
-				transform.localScale = new Vector3 (lr >= 0 ? xScale : -xScale, iScale.y, iScale.z);
-			}
+			animator.SetBool ("IsRunning", Math.Abs (lr) > 0);
+//			transform.localScale = new Vector3 (lr >= 0 ? initialScale.x : -initialScale.x, initialScale.y, initialScale.z);
 
 			// Jump
 
 			bool jump = Input.GetKeyDown (jumpButton);
 
-			if (jump && isGrounded && !isCleaning)
+			if (jump && isGrounded)
 			{
 				rigidBody.velocity = new Vector2 (rigidBody.velocity.x, rigidBody.velocity.y + jumpHeight * (jump ? 1 : 0));
 			}			
+
+			// 
 
 		}
 
@@ -96,26 +98,15 @@ namespace WindowCleaner
 		{
 			bool clean = Input.GetKeyDown (cleanButton);
 
-			if (clean && isGrounded && !isCleaning)
+			if (clean && isGrounded)
 			{
 				Window window = other.GetComponent<Window> ();
 				if (window != null)
 				{
-					isCleaning = true;
-					Timer timer = new Timer ();
-					timer.Interval = cleanTime;
-					timer.Enabled = true;
-					timer.Elapsed += (sender, e) => CleaningComplete(sender, e, window);
 					window.SetCleaned (this);
 				}
 
 			}
-		}
-
-		void CleaningComplete(object sender, ElapsedEventArgs e, Window window)
-		{
-			isCleaning = false;
-
 		}
 
 	}

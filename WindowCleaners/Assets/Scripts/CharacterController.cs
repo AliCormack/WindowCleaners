@@ -17,6 +17,7 @@ namespace WindowCleaner
 		Collider2D collider;
 
 		bool cleaning;
+		bool isGrounded;
 
 		public int cleanedWindows = 0;
 
@@ -43,6 +44,8 @@ namespace WindowCleaner
 		{
 			// TODO change to floating point controller input
 
+			isGrounded = IsGrounded ();
+
 			float lr = Input.GetAxis (horizontalAxis);
 
 
@@ -52,17 +55,24 @@ namespace WindowCleaner
 
 			bool jump = Input.GetKeyDown (jumpButton);
 
-			if (jump && IsGrounded ())
+
+
+			if (jump && isGrounded)
 			{
 				rigidBody.velocity = new Vector2 (rigidBody.velocity.x, rigidBody.velocity.y + jumpHeight * (jump ? 1 : 0));
-			}
-				
+			}			
 
 		}
 
 		bool IsGrounded()
 		{
 			RaycastHit2D raycast = Physics2D.Raycast (transform.position, Vector2.down, collider.bounds.extents.y+ 0.03f);
+			if (raycast.collider != null) {
+				transform.parent = raycast.collider.transform;
+			
+			} else {
+				transform.parent = null;
+			}
 			return raycast.collider != null;
 		}
 
@@ -70,7 +80,7 @@ namespace WindowCleaner
 		{
 			bool clean = Input.GetKeyDown (cleanButton);
 
-			if (clean && IsGrounded ())
+			if (clean && isGrounded)
 			{
 				Window window = other.GetComponent<Window> ();
 				if (window != null)

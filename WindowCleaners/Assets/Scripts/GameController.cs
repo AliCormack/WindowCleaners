@@ -63,6 +63,8 @@ namespace WindowCleaner
 
 				GondolaController gondola = gondolaGameObject.GetComponent<GondolaController> ();
 				gondola.SetPlayerNumber (i+1);
+
+				player.Gondola = gondola.gameObject;
 			}
 
 			windows = Object.FindObjectsOfType<Window> ().ToList ();

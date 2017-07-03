@@ -79,10 +79,6 @@ namespace WindowCleaner
 				transform.position = gondolaBtmPos;
 				rigidBody.velocity = Vector2.zero;
 				GetComponent<Rigidbody2D> ().velocity = Vector2.zero;
-//				Timer timer = new Timer ();
-//				timer.Interval = respawnTimer;
-//				timer.Enabled = true;
-//				timer.Elapsed += (sender, e) => CleaningComplete(sender, e, window);
 			}
 				
 			// Jump

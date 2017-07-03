@@ -14,7 +14,7 @@ namespace WindowCleaner
 		public Color color;
 
 		Rigidbody2D rigidBody;
-		Collider2D collider;
+		Collider2D myCollider;
 		Animator animator;
 
 		bool cleaning;
@@ -22,7 +22,8 @@ namespace WindowCleaner
 
 		public int cleanedWindows = 0;
 
-		int playerNumber;
+		public int PlayerNumber{ get; private set; }
+
 		string leftStickHorizontalAxis = "joystick {0} Left Horizontal";
 		string jumpButton = "joystick {0} button 1";
 		string cleanButton = "joystick {0} button 2";
@@ -31,7 +32,7 @@ namespace WindowCleaner
 
 		public void SetPlayerNumber(int playerNumber)
 		{
-			this.playerNumber = playerNumber;
+			this.PlayerNumber = playerNumber;
 			leftStickHorizontalAxis = string.Format (leftStickHorizontalAxis, playerNumber);
 			jumpButton = string.Format (jumpButton, playerNumber);
 			cleanButton = string.Format (cleanButton, playerNumber);
@@ -42,7 +43,7 @@ namespace WindowCleaner
 			initialScale = transform.localScale;
 
 			rigidBody = GetComponent<Rigidbody2D> ();
-			collider = GetComponent<Collider2D> ();
+			myCollider = GetComponent<Collider2D> ();
 			animator = GetComponent<Animator> ();
 		}
 
@@ -75,7 +76,7 @@ namespace WindowCleaner
 
 		bool IsGrounded()
 		{
-			RaycastHit2D raycast = Physics2D.Raycast (transform.position, Vector2.down, collider.bounds.extents.y+ 0.03f);
+			RaycastHit2D raycast = Physics2D.Raycast (transform.position, Vector2.down, myCollider.bounds.extents.y+ 0.03f);
 			if (raycast.collider != null) {
 				transform.parent = raycast.collider.transform;
 			

@@ -103,21 +103,17 @@ namespace WindowCleaner
 				foreach (var controller in characters) {
 					controller.enabled = false;
 				}	
-
+				//Find out what the top score is and which players have it
 				int topScore = characters.Max (character => character.cleanedWindows);
 				List<CharacterController> winners = characters.FindAll (character => character.cleanedWindows == topScore);
-				List<int> winnersIndex = new List<int> ();
-				foreach (var character in winners) {
-					winnersIndex.Add(characters.FindIndex (player => player == character));
-				}
 				
-				if (winnersIndex.Count == 1) {
-					GameEndText.text = "Player " + (winnersIndex[0]+1) + " wins!";
+				if (winners.Count == 1) {
+					GameEndText.text = "Player " + (winners[0].PlayerNumber) + " wins!";
 				} else {
 					string outText = "Players ";
-					for (int i = 0; i < winnersIndex.Count; i++) {
-						outText += "" + (winnersIndex[i]+1) + " ";
-						if (i != winnersIndex.Count-1) {
+					for (int i = 0; i < winners.Count; i++) {
+						outText += "" + (winners[i].PlayerNumber) + " ";
+						if (i != winners.Count-1) {
 							outText += "and ";
 						}
 					}

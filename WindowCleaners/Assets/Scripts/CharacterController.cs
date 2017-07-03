@@ -13,6 +13,7 @@ namespace WindowCleaner
 		public float jumpHeight = 10f;
 		public float cleanTime = 1f;
 		public float stompDuration = 1f;
+		public float respawnTimer = 4f;
 
 		public Color color;
 
@@ -72,10 +73,16 @@ namespace WindowCleaner
 
 			// Check if offscreen
 			if (!GetComponent<SpriteRenderer> ().isVisible) {
+				// Teleport to above gondola
 				Vector3 gondolaBtmPos = Gondola.transform.GetChild (1).transform.position;
-				gondolaBtmPos.y += 5;
+				gondolaBtmPos.y = 6;
 				transform.position = gondolaBtmPos;
 				rigidBody.velocity = Vector2.zero;
+				GetComponent<Rigidbody2D> ().velocity = Vector2.zero;
+//				Timer timer = new Timer ();
+//				timer.Interval = respawnTimer;
+//				timer.Enabled = true;
+//				timer.Elapsed += (sender, e) => CleaningComplete(sender, e, window);
 			}
 				
 			// Jump

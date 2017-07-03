@@ -87,7 +87,7 @@ namespace WindowCleaner
 
 			if (jump && isGrounded && !isCleaning)
 					rigidBody.velocity = new Vector2 (rigidBody.velocity.x, rigidBody.velocity.y + jumpHeight * (jump ? 1 : 0));
-				}	
+			
 			}
 
 

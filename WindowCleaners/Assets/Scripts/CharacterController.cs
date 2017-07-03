@@ -73,20 +73,6 @@ namespace WindowCleaner
 			animator.SetBool ("IsCleaning", isCleaning);
 			animator.SetBool ("IsFalling", !isGrounded && rigidBody.velocity.y < -8);
 
-			// Check if offscreen
-			if (!GetComponent<SpriteRenderer> ().isVisible) {
-				// Teleport to above gondola
-				rigidBody.velocity = Vector2.zero;
-				GetComponent<Rigidbody2D> ().velocity = Vector2.zero;
-				Timer timer = new Timer ();
-				timer.Interval = respawnTimer * 1000;
-				timer.Elapsed += (sender, e) =>
-				{
-					timer.Stop ();
-					shouldRespawnNow = true;
-				};
-				timer.Start ();
-			}
 				
 			// Jump
 
@@ -120,6 +106,7 @@ namespace WindowCleaner
 			}
 
 			if (shouldRespawnNow) {
+				GetComponent<Rigidbody2D> ().velocity = Vector2.zero;
 				Vector3 gondolaBtmPos = Gondola.transform.GetChild (1).transform.position;
 				gondolaBtmPos.y = 6;
 				transform.position = gondolaBtmPos;
@@ -192,6 +179,19 @@ namespace WindowCleaner
 			}
 		}
 
+
+		void OnBecameInvisible(){
+			// Teleport to above gondola
+			Timer timer = new Timer ();
+			timer.Interval = respawnTimer * 1000;
+			timer.Elapsed += (sender, e) =>
+			{
+				timer.Stop ();
+				shouldRespawnNow = true;
+			};
+			timer.Start ();
+		
+		}
 	
 
 	}

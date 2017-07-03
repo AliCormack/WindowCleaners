@@ -45,6 +45,7 @@ namespace WindowCleaner
 
 				CharacterController player = playerGameObject.GetComponent<CharacterController> ();
 				player.color = colors [i];
+				player.SetPlayerNumber (i+1);
 				characters.Add (player);
 			}
 

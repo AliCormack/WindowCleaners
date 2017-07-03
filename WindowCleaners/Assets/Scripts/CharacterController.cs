@@ -29,11 +29,11 @@ namespace WindowCleaner
 		void FixedUpdate () 
 		{
 			// TODO change to floating point controller input
-			int move = Convert.ToInt32(Input.GetKey (KeyCode.D)) - Convert.ToInt32(Input.GetKey (KeyCode.A));	
+			int move = Convert.ToInt32(Input.GetKey (KeyCode.RightArrow)) - Convert.ToInt32(Input.GetKey (KeyCode.LeftArrow));	
 
 			rigidBody.velocity = new Vector2 (move * speed, rigidBody.velocity.y);
 
-			int jump = Convert.ToInt32(Input.GetKeyDown (KeyCode.W));
+			int jump = Convert.ToInt32(Input.GetKeyDown (KeyCode.Space));
 
 			if (jump > 0 && IsGrounded ())
 			{

@@ -22,14 +22,14 @@ namespace WindowCleaner
 		public int cleanedWindows = 0;
 
 		int playerNumber;
-		string horizontalAxis = "joystick {0} Horizontal";
+		string leftStickHorizontalAxis = "joystick {0} Left Horizontal";
 		string jumpButton = "joystick {0} button 1";
 		string cleanButton = "joystick {0} button 2";
 
 		public void SetPlayerNumber(int playerNumber)
 		{
 			this.playerNumber = playerNumber;
-			horizontalAxis = string.Format (horizontalAxis, playerNumber);
+			leftStickHorizontalAxis = string.Format (leftStickHorizontalAxis, playerNumber);
 			jumpButton = string.Format (jumpButton, playerNumber);
 			cleanButton = string.Format (cleanButton, playerNumber);
 		}
@@ -42,25 +42,25 @@ namespace WindowCleaner
 
 		void FixedUpdate () 
 		{
-			// TODO change to floating point controller input
 
 			isGrounded = IsGrounded ();
 
-			float lr = Input.GetAxis (horizontalAxis);
+			// Jump
 
-
+			float lr = Input.GetAxis (leftStickHorizontalAxis);
 			int move = Convert.ToInt32(Input.GetKey (KeyCode.RightArrow)) - Convert.ToInt32(Input.GetKey (KeyCode.LeftArrow));	
-
 			rigidBody.velocity = new Vector2 (lr * speed, rigidBody.velocity.y);
 
+			// Jump
+
 			bool jump = Input.GetKeyDown (jumpButton);
-
-
 
 			if (jump && isGrounded)
 			{
 				rigidBody.velocity = new Vector2 (rigidBody.velocity.x, rigidBody.velocity.y + jumpHeight * (jump ? 1 : 0));
 			}			
+
+			// 
 
 		}
 

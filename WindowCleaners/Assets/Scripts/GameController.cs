@@ -35,7 +35,7 @@ namespace WindowCleaner
 
 		public Text TimerText; 
 		public List<Text> ScoreText;
-		public Text GameEndText;
+		public GameObject EndPanel;
 		public GameObject StartPanel;
 
 		void Start () 
@@ -114,9 +114,10 @@ namespace WindowCleaner
 				//Find out what the top score is and which players have it
 				int topScore = characters.Max (character => character.cleanedWindows);
 				List<CharacterController> winners = characters.FindAll (character => character.cleanedWindows == topScore);
-				
+
+				Text endText = EndPanel.GetComponentInChildren<Text> ();
 				if (winners.Count == 1) {
-					GameEndText.text = "Player " + (winners[0].PlayerNumber) + " wins!";
+					endText.text = "Player " + (winners[0].PlayerNumber) + " wins!";
 				} else {
 					string outText = "Players ";
 					for (int i = 0; i < winners.Count; i++) {
@@ -126,9 +127,10 @@ namespace WindowCleaner
 						}
 					}
 					outText += "win!";
-					GameEndText.text = outText;		
+					endText.text = outText;		
 				}
-				GameEndText.enabled = true;
+
+				EndPanel.SetActive(true);
 
 			}
 

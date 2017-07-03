@@ -5,18 +5,12 @@ using UnityEngine;
 public class GondolaScript : MonoBehaviour {
 
 	public GameObject GondolaTop;
-	public GameObject CablePrefab;
 
-	private GameObject leftCable;
-	private GameObject rightCable;
-
-	private float xVel;
+	public GameObject leftCable;
+	public GameObject rightCable;
 
 	// Use this for initialization
 	void Start () {
-		leftCable = Instantiate (CablePrefab);
-		rightCable = Instantiate (CablePrefab);
-
 
 	}
 	
@@ -31,8 +25,6 @@ public class GondolaScript : MonoBehaviour {
 			transform.Translate (new Vector2 (0, -0.1f));
 		}
 
-		float prevXVel = xVel;
-
 		if(Input.GetKey(KeyCode.A)){
 			transform.Translate (new Vector2 (-0.1f, 0));
 			GondolaTop.transform.Translate (new Vector2 (-0.1f, 0));
@@ -44,11 +36,7 @@ public class GondolaScript : MonoBehaviour {
 
 		UpdateCable (leftCable, new Vector3(-1,0,0));
 		UpdateCable (rightCable, new Vector3(1,0,0));
-
-
-
 	}
-		
 
 	void UpdateCable(GameObject cable, Vector3 offset)
 	{
@@ -57,5 +45,22 @@ public class GondolaScript : MonoBehaviour {
 
 		cable.transform.rotation = Quaternion.LookRotation(direction);
 		cable.transform.localScale = new Vector3(cable.transform.localScale.x,cable.transform.localScale.y,direction.magnitude);
+	}
+
+
+	private void OnCollisionEnter(Collision c)
+	{
+		if(c.transform.name == "Player")
+		{
+			c.transform.parent = transform;
+		}
+	}
+
+	private void OnCollisionLeave(Collision c)
+	{
+		if(c.transform.name == "Player")
+		{
+			c.transform.parent = null;
+		}
 	}
 }

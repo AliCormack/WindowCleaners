@@ -57,7 +57,9 @@ namespace WindowCleaner
 
 			foreach (Window window in windows)
 			{
-				window.cleanedBy.cleanedWindows += 1;
+				if (window.cleanedBy != null) {
+					window.cleanedBy.cleanedWindows += 1;
+				}
 			}
 		}
 	}

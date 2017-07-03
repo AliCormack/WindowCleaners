@@ -20,6 +20,8 @@ namespace WindowCleaner
 		Collider2D myCollider;
 		Animator animator;
 
+		public GameObject Gondola;
+
 		bool isCleaning;
 		bool isGrounded;
 		bool isStomped;
@@ -57,6 +59,13 @@ namespace WindowCleaner
 		{
 			animator.SetBool ("IsCleaning", isCleaning);
 			isGrounded = IsGrounded ();
+
+			if (!GetComponent<SpriteRenderer> ().isVisible) {
+				Vector3 gondolaBtmPos = Gondola.transform.GetChild (1).transform.position;
+				gondolaBtmPos.y += 5;
+				transform.position = gondolaBtmPos;
+
+			}
 
 			if (isStomped) {
 				stompTimer -= Time.deltaTime;

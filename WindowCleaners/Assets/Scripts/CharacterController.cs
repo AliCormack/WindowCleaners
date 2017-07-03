@@ -15,6 +15,7 @@ namespace WindowCleaner
 
 		Rigidbody2D rigidBody;
 		Collider2D collider;
+		Animator animator;
 
 		bool cleaning;
 		bool isGrounded;
@@ -26,6 +27,8 @@ namespace WindowCleaner
 		string jumpButton = "joystick {0} button 1";
 		string cleanButton = "joystick {0} button 2";
 
+		Vector3 initialScale;
+
 		public void SetPlayerNumber(int playerNumber)
 		{
 			this.playerNumber = playerNumber;
@@ -36,8 +39,11 @@ namespace WindowCleaner
 
 		void Start () 
 		{
+			initialScale = transform.localScale;
+
 			rigidBody = GetComponent<Rigidbody2D> ();
 			collider = GetComponent<Collider2D> ();
+			animator = GetComponent<Animator> ();
 		}
 
 		void FixedUpdate () 
@@ -50,6 +56,9 @@ namespace WindowCleaner
 			float lr = Input.GetAxis (leftStickHorizontalAxis);
 			int move = Convert.ToInt32(Input.GetKey (KeyCode.RightArrow)) - Convert.ToInt32(Input.GetKey (KeyCode.LeftArrow));	
 			rigidBody.velocity = new Vector2 (lr * speed, rigidBody.velocity.y);
+
+			animator.SetBool ("IsRunning", Math.Abs (lr) > 0);
+//			transform.localScale = new Vector3 (lr >= 0 ? initialScale.x : -initialScale.x, initialScale.y, initialScale.z);
 
 			// Jump
 

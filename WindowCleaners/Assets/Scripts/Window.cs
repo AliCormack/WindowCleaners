@@ -27,6 +27,11 @@ namespace WindowCleaner
 				spriteRenderer.color = cleaner.color;
 			}
 		}
+
+		public void Reset(){
+			this.cleanedBy = null;
+			spriteRenderer.color = Color.white;
+		}
 		
 	
 	}

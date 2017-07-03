@@ -76,7 +76,7 @@ namespace WindowCleaner
 				
 			// Jump
 
-			if (!isCleaning)
+			if (!isDisabled)
 			{
 				float lr = Input.GetAxis (leftStickHorizontalAxis);
 				int move = Convert.ToInt32 (Input.GetKey (KeyCode.RightArrow)) - Convert.ToInt32 (Input.GetKey (KeyCode.LeftArrow));	
@@ -137,7 +137,7 @@ namespace WindowCleaner
 				if (clean && isGrounded && !isCleaning )
 				{
 					Window window = other.GetComponent<Window> ();
-					if (window != null)
+					if (window != null && window.cleanedBy != GetComponent<CharacterController>())
 					{
 						isCleaning = true;
 

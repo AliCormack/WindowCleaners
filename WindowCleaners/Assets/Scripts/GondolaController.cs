@@ -6,8 +6,8 @@ public class GondolaController : MonoBehaviour {
 
 	public GameObject GondolaTop;
 	public GameObject GondolaBottom;
-	public GameObject leftCable;
-	public GameObject rightCable;
+	public LineRenderer leftCable;
+	public LineRenderer rightCable;
 
 	public float udSpeed = 0.1f;
 	public float lrSpeed = 0.1f;
@@ -21,14 +21,24 @@ public class GondolaController : MonoBehaviour {
 		rightStickVerticalAxis = string.Format (rightStickVerticalAxis, playerNumber);
 	}
 
-	void FixedUpdate () 
+	void Update () 
 	{
 		float lr = Input.GetAxis (rightStickHorizontalAxis);
 		float ud = Input.GetAxis (rightStickVerticalAxis);
 
 		GondolaBottom.transform.Translate(lr * lrSpeed, ud * udSpeed, 0);
 		GondolaTop.transform.Translate (lr * lrSpeed, 0, 0);
+
+		Vector3 topPos = GondolaTop.transform.position;
+		Vector3 btmPos = GondolaBottom.transform.position;
+
+		leftCable.SetPosition(0, new Vector3(topPos.x-1, topPos.y, topPos.z)); 
+		leftCable.SetPosition(1, new Vector3(btmPos.x-1, btmPos.y, btmPos.z)); 
+
+		rightCable.SetPosition(0, new Vector3(topPos.x+1, topPos.y, topPos.z)); 
+		rightCable.SetPosition(1, new Vector3(btmPos.x+1, btmPos.y, btmPos.z)); 
 	
 	}
+
 		
 }

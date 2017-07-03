@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using System.Timers;
 
 namespace WindowCleaner
 {
@@ -12,7 +13,9 @@ namespace WindowCleaner
 
 		public enum GameState{
 			Starting,
+			Started,
 			Playing,
+			Ending,
 			Ended	
 		}
 		private GameState currentState;
@@ -37,6 +40,8 @@ namespace WindowCleaner
 		public List<Text> ScoreText;
 		public GameObject EndPanel;
 		public GameObject StartPanel;
+
+		private bool canRestart;
 
 		void Start () 
 		{
@@ -69,9 +74,7 @@ namespace WindowCleaner
 			}
 
 			windows = Object.FindObjectsOfType<Window> ().ToList ();
-
-			timeLeft = TimeLimit;
-
+		
 		}
 		
 		// Update is called once per frame
@@ -80,16 +83,19 @@ namespace WindowCleaner
 			if (currentState == GameState.Starting) {
 				if (Input.anyKeyDown) {
 					StartPanel.SetActive (false);
-					currentState = GameState.Playing;
+					currentState = GameState.Started;
 				}
-			}
+			} else if (currentState == GameState.Started) {
+				timeLeft = TimeLimit;
+				currentState = GameState.Playing;
+			} 
 			else if (currentState == GameState.Playing) {
 				// Timer update
 				timeLeft -= Time.deltaTime;
-				TimerText.text = timeLeft.ToString ("F0");
+				TimerText.text = Mathf.Ceil(timeLeft).ToString();
 
 				if (timeLeft <= 0) {
-					currentState = GameState.Ended;
+					currentState = GameState.Ending;
 				}
 
 
@@ -105,10 +111,9 @@ namespace WindowCleaner
 				}
 
 				for (int i = 0; i < ScoreText.Count; i++) {
-					ScoreText [i].text = "Player "+ (i+1) +": $" + characters [i].cleanedWindows * PointsPerWindow;
+					ScoreText [i].text = "Player " + (i + 1) + ": $" + characters [i].cleanedWindows * PointsPerWindow;
 				}
-			}
-			else if(currentState == GameState.Ended){
+			} else if (currentState == GameState.Ending) {
 				foreach (var controller in characters) {
 					controller.enabled = false;
 				}	
@@ -118,12 +123,12 @@ namespace WindowCleaner
 
 				Text endText = EndPanel.GetComponentInChildren<Text> ();
 				if (winners.Count == 1) {
-					endText.text = "Player " + (winners[0].PlayerNumber) + " wins!";
+					endText.text = "Player " + (winners [0].PlayerNumber) + " wins!";
 				} else {
 					string outText = "Players ";
 					for (int i = 0; i < winners.Count; i++) {
-						outText += "" + (winners[i].PlayerNumber) + " ";
-						if (i != winners.Count-1) {
+						outText += "" + (winners [i].PlayerNumber) + " ";
+						if (i != winners.Count - 1) {
 							outText += "and ";
 						}
 					}
@@ -131,11 +136,44 @@ namespace WindowCleaner
 					endText.text = outText;		
 				}
 
-				EndPanel.SetActive(true);
+				EndPanel.SetActive (true);
+				currentState = GameState.Ended;
+			} else if (currentState == GameState.Ended) {
+				Timer timer = new Timer ();
+				timer.Interval = 2000;
+				timer.Elapsed += (sender, e) =>
+				{
+					timer.Stop();
+					canRestart = true;
+				};
+				timer.Start ();
 
+				if (canRestart && Input.anyKeyDown) {
+					canRestart = false;
+					Reset ();
+				}
+			
 			}
 
 			
+		}
+
+		void Reset(){
+			foreach (var character in characters) {
+				Destroy (character.Gondola);
+				Destroy (character.gameObject);
+			}
+			characters = new List<CharacterController> ();
+
+			foreach (var window in windows) {
+				window.Reset ();
+			}
+			EndPanel.SetActive (false);
+
+			Start ();
+
+			currentState = GameState.Started;
+		
 		}
 	}
 

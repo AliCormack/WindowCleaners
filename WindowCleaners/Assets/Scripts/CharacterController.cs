@@ -17,6 +17,7 @@ namespace WindowCleaner
 		Collider2D collider;
 
 		bool cleaning;
+		bool isGrounded;
 
 		public int cleanedWindows = 0;
 
@@ -35,7 +36,9 @@ namespace WindowCleaner
 
 			int jump = Convert.ToInt32(Input.GetKeyDown (KeyCode.Space));
 
-			if (jump > 0 && IsGrounded ())
+			isGrounded = IsGrounded ();
+
+			if (jump > 0 && isGrounded)
 			{
 				rigidBody.velocity = new Vector2 (rigidBody.velocity.x, rigidBody.velocity.y + jumpHeight * jump);
 			}
@@ -59,7 +62,7 @@ namespace WindowCleaner
 		{
 			int clean = Convert.ToInt32(Input.GetKeyDown (KeyCode.S));
 
-			if (clean > 0 && IsGrounded ())
+			if (clean > 0 && isGrounded)
 			{
 				Window window = other.GetComponent<Window> ();
 				if (window != null)

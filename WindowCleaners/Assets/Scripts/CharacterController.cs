@@ -73,6 +73,7 @@ namespace WindowCleaner
 			animator.SetBool ("IsCleaning", isCleaning);
 			animator.SetBool ("IsFalling", !isGrounded && rigidBody.velocity.y < -8);
 
+
 				
 			// Jump
 
@@ -95,6 +96,7 @@ namespace WindowCleaner
 
 			if (jump && isGrounded && !isCleaning)
 			{
+				animator.SetTrigger ("Jump");
 				rigidBody.velocity = new Vector2 (rigidBody.velocity.x, rigidBody.velocity.y + jumpHeight * (jump ? 1 : 0));
 			}
 

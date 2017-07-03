@@ -77,7 +77,7 @@ namespace WindowCleaner
 		bool IsGrounded()
 		{
 			RaycastHit2D raycast = Physics2D.Raycast (transform.position, Vector2.down, myCollider.bounds.extents.y+ 0.03f);
-			if (raycast.collider != null) {
+			if (raycast.collider != null && raycast.collider.tag == "Standable") {
 				transform.parent = raycast.collider.transform;
 			
 			} else {

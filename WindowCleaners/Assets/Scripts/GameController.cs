@@ -36,6 +36,7 @@ namespace WindowCleaner
 		public Text TimerText; 
 		public List<Text> ScoreText;
 		public Text GameEndText;
+		public GameObject StartPanel;
 
 		void Start () 
 		{
@@ -67,14 +68,20 @@ namespace WindowCleaner
 			windows = Object.FindObjectsOfType<Window> ().ToList ();
 
 			timeLeft = TimeLimit;
-			currentState = GameState.Playing;
 
 		}
 		
 		// Update is called once per frame
 		void Update () 
 		{
-			if (currentState == GameState.Playing) {
+			if (currentState == GameState.Starting) {
+				if (Input.anyKeyDown) {
+					Debug.Log ("Starting");
+					StartPanel.SetActive (false);
+					currentState = GameState.Playing;
+				}
+			}
+			else if (currentState == GameState.Playing) {
 				// Timer update
 				timeLeft -= Time.deltaTime;
 				TimerText.text = timeLeft.ToString ("F1");

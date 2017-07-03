@@ -26,7 +26,13 @@ namespace WindowCleaner
 		bool isGrounded;
 		bool isStomped;
 
-		float stompTimer;
+		public bool isDisabled
+		{
+			get
+			{
+				return isCleaning || isStomped;
+			}
+		}
 
 		public int cleanedWindows = 0;
 
@@ -60,49 +66,47 @@ namespace WindowCleaner
 
 			isGrounded = IsGrounded ();
 
+			// Animation parameters
 			animator.SetBool ("IsCleaning", isCleaning);
-			bool isFalling = !isGrounded && rigidBody.velocity.y < -7;
-			animator.SetBool ("IsFalling", isFalling);
+			animator.SetBool ("IsFalling", !isGrounded && rigidBody.velocity.y < -8);
 
+			// Check if offscreen
 			if (!GetComponent<SpriteRenderer> ().isVisible) {
 				Vector3 gondolaBtmPos = Gondola.transform.GetChild (1).transform.position;
 				gondolaBtmPos.y += 5;
 				transform.position = gondolaBtmPos;
+				rigidBody.velocity = Vector2.zero;
+			}
+				
+			// Jump
 
+			if (!isCleaning)
+			{
+				float lr = Input.GetAxis (leftStickHorizontalAxis);
+				int move = Convert.ToInt32 (Input.GetKey (KeyCode.RightArrow)) - Convert.ToInt32 (Input.GetKey (KeyCode.LeftArrow));	
+				rigidBody.velocity = new Vector2 (lr * speed, rigidBody.velocity.y);
+
+				animator.SetBool ("IsRunning", Math.Abs (lr) > 0);
+
+				Vector3 iScale = transform.localScale;
+				float xScale = Math.Abs (iScale.x);
+				transform.localScale = new Vector3 (lr >= 0 ? xScale : -xScale, iScale.y, iScale.z);
 			}
 
-			if (isStomped) {
-				stompTimer -= Time.deltaTime;
-				if (stompTimer <= 0) {
-					isStomped = false;
-					GetComponent<SpriteRenderer> ().color = Color.white;
-				}
+			// Jump
+
+			bool jump = Input.GetKeyDown (jumpButton);
+
+			if (jump && isGrounded && !isCleaning)
+			{
+				rigidBody.velocity = new Vector2 (rigidBody.velocity.x, rigidBody.velocity.y + jumpHeight * (jump ? 1 : 0));
 			}
-			else{
-				// Jump
 
-				if (!isCleaning)
-				{
-					float lr = Input.GetAxis (leftStickHorizontalAxis);
-					int move = Convert.ToInt32 (Input.GetKey (KeyCode.RightArrow)) - Convert.ToInt32 (Input.GetKey (KeyCode.LeftArrow));	
-					rigidBody.velocity = new Vector2 (lr * speed, rigidBody.velocity.y);
+			// Stomped Color
 
-					animator.SetBool ("IsRunning", Math.Abs (lr) > 0);
-
-					Vector3 iScale = transform.localScale;
-					float xScale = Math.Abs (iScale.x);
-					transform.localScale = new Vector3 (lr >= 0 ? xScale : -xScale, iScale.y, iScale.z);
-				}
-
-					// Jump
-
-					bool jump = Input.GetKeyDown (jumpButton);
-
-				if (jump && isGrounded && !isCleaning)
-				{
-					rigidBody.velocity = new Vector2 (rigidBody.velocity.x, rigidBody.velocity.y + jumpHeight * (jump ? 1 : 0));
-				}
-			
+			if (!isStomped)
+			{
+				GetComponent<SpriteRenderer> ().color = Color.white;
 			}
 
 		}
@@ -130,35 +134,42 @@ namespace WindowCleaner
 				{
 					isCleaning = true;
 					Timer timer = new Timer ();
-					timer.Interval = cleanTime;
-					timer.Enabled = true;
-					timer.Elapsed += (sender, e) => CleaningComplete(sender, e, window);
+					timer.Interval = cleanTime * 1000;
+					timer.Elapsed += (sender, e) =>
+					{
+						timer.Stop();
+						isCleaning = false;
+					};
+					timer.Start ();
 					window.SetCleaned (this);
 				}
 
 			}
 		}
 
-		private void Stomped(){
+		void Stomped()
+		{
 			isStomped = true;
-			stompTimer = stompDuration;
 			GetComponent<SpriteRenderer> ().color = Color.red;
+
+			Timer timer = new Timer ();
+			timer.Interval = stompDuration * 1000;
+			timer.Elapsed += (sender, e) =>
+			{
+				isStomped = false;
+			};
+			timer.Start ();
 		}
 
-		void OnTriggerEnter2D(Collider2D other){
-			if (other.transform.tag == "Player") {
-				if (other.transform.GetComponent<Rigidbody2D> ().velocity.y < 0) {
-					Stomped ();
-				}
-			
+		void OnTriggerEnter2D(Collider2D other)
+		{
+			if (other.transform.tag == "Player" && other.transform.GetComponent<Rigidbody2D> ().velocity.y < -0.5f) 
+			{
+				Stomped ();
 			}
 		}
 
-		void CleaningComplete(object sender, ElapsedEventArgs e, Window window)
-		{
-			isCleaning = false;
-
-		}
+	
 
 	}
 

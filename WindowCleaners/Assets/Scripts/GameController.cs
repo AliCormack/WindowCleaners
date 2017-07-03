@@ -56,15 +56,16 @@ namespace WindowCleaner
 				rb2d.sleepMode = RigidbodySleepMode2D.NeverSleep;
 				rb2d.constraints = RigidbodyConstraints2D.FreezeRotation;
 
-				CharacterController player = playerGameObject.GetComponent<CharacterController> ();
-				player.color = colors [i];
-				player.SetPlayerNumber (i+1);
-				characters.Add (player);
+				CharacterController characterController = playerGameObject.GetComponent<CharacterController> ();
+				characterController.color = colors [i];
+				characterController.SetPlayerNumber (i+1);
+				characters.Add (characterController);
 
 				GondolaController gondola = gondolaGameObject.GetComponent<GondolaController> ();
+				gondola.characterController = characterController;
 				gondola.SetPlayerNumber (i+1);
 
-				player.Gondola = gondola.gameObject;
+				characterController.Gondola = gondola.gameObject;
 			}
 
 			windows = Object.FindObjectsOfType<Window> ().ToList ();

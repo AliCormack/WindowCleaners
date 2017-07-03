@@ -17,7 +17,6 @@ public class GondolaScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-
 		if(Input.GetKey(KeyCode.W)){
 			transform.Translate (new Vector2 (0, 0.1f));
 		}
@@ -45,22 +44,5 @@ public class GondolaScript : MonoBehaviour {
 
 		cable.transform.rotation = Quaternion.LookRotation(direction);
 		cable.transform.localScale = new Vector3(cable.transform.localScale.x,cable.transform.localScale.y,direction.magnitude);
-	}
-
-
-	private void OnCollisionEnter(Collision c)
-	{
-		if(c.transform.name == "Player")
-		{
-			c.transform.parent = transform;
-		}
-	}
-
-	private void OnCollisionLeave(Collision c)
-	{
-		if(c.transform.name == "Player")
-		{
-			c.transform.parent = null;
-		}
 	}
 }

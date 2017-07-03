@@ -3,41 +3,67 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class CharacterController : MonoBehaviour {
+namespace WindowCleaner
+{
 
-	public float speed = 10f;
-	public float jumpHeight = 10f;
+	public class CharacterController : MonoBehaviour {
 
-	Rigidbody2D rigidBody;
-	Collider2D collider;
+		public float speed = 10f;
+		public float jumpHeight = 10f;
 
-	void Start () 
-	{
-		rigidBody = GetComponent<Rigidbody2D> ();
-		collider = GetComponent<Collider2D> ();
-	}
+		public Color color;
 
-	void FixedUpdate () 
-	{
-		// TODO change to floating point controller input
-		int move = Convert.ToInt32(Input.GetKey (KeyCode.D)) - Convert.ToInt32(Input.GetKey (KeyCode.A));	
+		Rigidbody2D rigidBody;
+		Collider2D collider;
 
-		rigidBody.velocity = new Vector2 (move * speed, rigidBody.velocity.y);
+		bool cleaning;
 
-		int jump = Convert.ToInt32(Input.GetKeyDown (KeyCode.W));
+		public int cleanedWindows = 0;
 
-		if (jump > 0 && IsGrounded ())
+		void Start () 
 		{
-			rigidBody.velocity = new Vector2 (rigidBody.velocity.x, rigidBody.velocity.y + jumpHeight * jump);
+			rigidBody = GetComponent<Rigidbody2D> ();
+			collider = GetComponent<Collider2D> ();
 		}
 
-	}
+		void FixedUpdate () 
+		{
+			// TODO change to floating point controller input
+			int move = Convert.ToInt32(Input.GetKey (KeyCode.D)) - Convert.ToInt32(Input.GetKey (KeyCode.A));	
 
-	bool IsGrounded()
-	{
-		RaycastHit2D raycast = Physics2D.Raycast (transform.position, Vector2.down, collider.bounds.extents.y+ 0.03f);
-		Debug.Log (raycast.collider);
-		return raycast.collider != null;
+			rigidBody.velocity = new Vector2 (move * speed, rigidBody.velocity.y);
+
+			int jump = Convert.ToInt32(Input.GetKeyDown (KeyCode.W));
+
+			if (jump > 0 && IsGrounded ())
+			{
+				rigidBody.velocity = new Vector2 (rigidBody.velocity.x, rigidBody.velocity.y + jumpHeight * jump);
+			}
+				
+
+		}
+
+		bool IsGrounded()
+		{
+			RaycastHit2D raycast = Physics2D.Raycast (transform.position, Vector2.down, collider.bounds.extents.y+ 0.03f);
+			return raycast.collider != null;
+		}
+
+		void OnTriggerStay2D(Collider2D other)
+		{
+			int clean = Convert.ToInt32(Input.GetKeyDown (KeyCode.S));
+
+			if (clean > 0 && IsGrounded ())
+			{
+				Window window = other.GetComponent<Window> ();
+				if (window != null)
+				{
+					window.SetCleaned (this);
+				}
+
+			}
+		}
+
 	}
 
 }

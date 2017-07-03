@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Linq;
 
 namespace WindowCleaner
@@ -8,6 +9,13 @@ namespace WindowCleaner
 
 	public class GameController : MonoBehaviour 
 	{
+
+		public enum GameState{
+			Starting,
+			Playing,
+			Ended	
+		}
+		private GameState currentState;
 
 		static Color player1Color = Color.blue;
 		static Color player2Color = Color.red;
@@ -21,14 +29,16 @@ namespace WindowCleaner
 		List<Window> windows;
 		List<CharacterController> characters;
 
-		bool gameStarted = false;
-
 		public float TimeLimit;
 		private float timeLeft;
 
+		public Text TimerText; 
+		public List<Text> ScoreText;
+		public Text GameEndText;
 
 		void Start () 
 		{
+			currentState = GameState.Starting;
 			characters = new List<CharacterController> ();
 
 			for (int i = 0; i <= numPlayers; i++)
@@ -52,27 +62,68 @@ namespace WindowCleaner
 			windows = Object.FindObjectsOfType<Window> ().ToList ();
 
 			timeLeft = TimeLimit;
-			gameStarted = true;
+			currentState = GameState.Playing;
 
 		}
 		
 		// Update is called once per frame
 		void Update () 
 		{
-			timeLeft -= Time.deltaTime;
+			if (currentState == GameState.Playing) {
+				// Timer update
+				timeLeft -= Time.deltaTime;
+				TimerText.text = timeLeft.ToString ("F1");
+
+				if (timeLeft <= 0) {
+					currentState = GameState.Ended;
+				}
 
 
-			foreach (CharacterController controller in characters)
-			{
-				controller.cleanedWindows = 0;
-			}
+				// Scores update
+				foreach (CharacterController controller in characters) {
+					controller.cleanedWindows = 0;
+				}
 
-			foreach (Window window in windows)
-			{
-				if (window.cleanedBy != null) {
-					window.cleanedBy.cleanedWindows += 1;
+				foreach (Window window in windows) {
+					if (window.cleanedBy != null) {
+						window.cleanedBy.cleanedWindows += 1;
+					}
+				}
+
+				for (int i = 0; i < ScoreText.Count; i++) {
+					ScoreText [i].text = "Player "+ (i+1) +": $" + characters [i].cleanedWindows * PointsPerWindow;
 				}
 			}
+			else if(currentState == GameState.Ended){
+				foreach (var controller in characters) {
+					controller.enabled = false;
+				}	
+
+				int topScore = characters.Max (character => character.cleanedWindows);
+				List<CharacterController> winners = characters.FindAll (character => character.cleanedWindows == topScore);
+				List<int> winnersIndex = new List<int> ();
+				foreach (var character in winners) {
+					winnersIndex.Add(characters.FindIndex (player => player == character));
+				}
+				
+				if (winnersIndex.Count == 1) {
+					GameEndText.text = "Player " + (winnersIndex[0]+1) + " wins!";
+				} else {
+					string outText = "Players ";
+					for (int i = 0; i < winnersIndex.Count; i++) {
+						outText += "" + (winnersIndex[i]+1) + " ";
+						if (i != winnersIndex.Count-1) {
+							outText += "and ";
+						}
+					}
+					outText += "win!";
+					GameEndText.text = outText;		
+				}
+				GameEndText.enabled = true;
+
+			}
+
+			
 		}
 	}
 

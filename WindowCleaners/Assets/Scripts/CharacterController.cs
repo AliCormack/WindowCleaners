@@ -117,21 +117,24 @@ namespace WindowCleaner
 
 		void OnTriggerStay2D(Collider2D other)
 		{
-			bool clean = Input.GetKeyDown (cleanButton);
+			if( other.IsTouching(GetComponent<CapsuleCollider2D>())){
+				
+				bool clean = Input.GetKeyDown (cleanButton);
 
-			if (clean && isGrounded && !isCleaning)
-			{
-				Window window = other.GetComponent<Window> ();
-				if (window != null)
+				if (clean && isGrounded && !isCleaning )
 				{
-					isCleaning = true;
-					Timer timer = new Timer ();
-					timer.Interval = cleanTime;
-					timer.Enabled = true;
-					timer.Elapsed += (sender, e) => CleaningComplete(sender, e, window);
-					window.SetCleaned (this);
-				}
+					Window window = other.GetComponent<Window> ();
+					if (window != null)
+					{
+						isCleaning = true;
+						Timer timer = new Timer ();
+						timer.Interval = cleanTime;
+						timer.Enabled = true;
+						timer.Elapsed += (sender, e) => CleaningComplete(sender, e, window);
+						window.SetCleaned (this);
+					}
 
+				}
 			}
 		}
 

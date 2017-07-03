@@ -42,7 +42,7 @@ namespace WindowCleaner
 
 		string leftStickHorizontalAxis = "joystick {0} Left Horizontal";
 		string jumpButton = "joystick {0} button 1";
-		string cleanButton = "joystick {0} button 2";
+		string cleanButton = "joystick {0} button 7";
 
 		Vector3 initialScale;
 
@@ -63,7 +63,7 @@ namespace WindowCleaner
 			animator = GetComponent<Animator> ();
 		}
 
-		void FixedUpdate () 
+		void Update () 
 		{
 
 			isGrounded = IsGrounded ();
@@ -93,7 +93,7 @@ namespace WindowCleaner
 
 			bool jump = Input.GetKeyDown (jumpButton);
 
-			if (jump && isGrounded && !isCleaning)
+			if (jump && isGrounded && !isDisabled)
 			{
 				animator.SetTrigger ("Jump");
 				rigidBody.velocity = new Vector2 (rigidBody.velocity.x, rigidBody.velocity.y + jumpHeight * (jump ? 1 : 0));
@@ -111,11 +111,12 @@ namespace WindowCleaner
 				Vector3 gondolaBtmPos = Gondola.transform.GetChild (1).transform.position;
 				gondolaBtmPos.y = 6;
 				transform.position = gondolaBtmPos;
-
+				GetComponent<Rigidbody2D> ().isKinematic = false;
 				shouldRespawnNow = false;
 			}
 
 		}
+			
 
 		bool IsGrounded()
 		{
@@ -182,15 +183,21 @@ namespace WindowCleaner
 
 
 		void OnBecameInvisible(){
-			// Teleport to above gondola
-			Timer timer = new Timer ();
-			timer.Interval = respawnTimer * 1000;
-			timer.Elapsed += (sender, e) =>
-			{
-				timer.Stop ();
-				shouldRespawnNow = true;
-			};
-			timer.Start ();
+			if (!shouldRespawnNow) {
+				// Teleport to above gondola
+				Timer timer = new Timer ();
+				timer.Interval = respawnTimer * 1000;
+				timer.Elapsed += (sender, e) => {
+					timer.Stop ();
+					shouldRespawnNow = true;
+				};
+				timer.Start ();
+				GetComponent<Rigidbody2D> ().velocity = Vector2.zero;
+				Vector3 gondolaBtmPos = Gondola.transform.GetChild (1).transform.position;
+				gondolaBtmPos.y = 6;
+				transform.position = gondolaBtmPos;
+				GetComponent<Rigidbody2D> ().isKinematic = true;
+			}
 		
 		}
 	

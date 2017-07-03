@@ -15,25 +15,28 @@ namespace WindowCleaner
 		{
 			spriteRenderer = GetComponent<SpriteRenderer> ();
 
-			SetCleaned (null);
+			Reset ();
 		}
 
 		public void SetCleaned(CharacterController cleaner)
 		{
 			this.cleanedBy = cleaner;
 
-			if (cleaner != null)
-			{
+			if (cleaner != null) {
 				spriteRenderer.color = cleaner.color;
 				Sprite newSprite = Resources.Load<Sprite> ("Clean_Window");
 				spriteRenderer.sprite = newSprite;
 
+			} else {
+				Sprite newSprite = Resources.Load<Sprite> ("Dirty_Window");
+				spriteRenderer.sprite = newSprite;
+				spriteRenderer.color = Color.white;
 			}
 		}
 
 		public void Reset(){
-			this.cleanedBy = null;
-			spriteRenderer.color = Color.white;
+			SetCleaned (null);
+
 		}
 		
 	

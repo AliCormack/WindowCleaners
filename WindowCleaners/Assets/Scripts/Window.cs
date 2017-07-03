@@ -25,6 +25,9 @@ namespace WindowCleaner
 			if (cleaner != null)
 			{
 				spriteRenderer.color = cleaner.color;
+				Sprite newSprite = Resources.Load<Sprite> ("Clean_Window");
+				spriteRenderer.sprite = newSprite;
+
 			}
 		}
 
